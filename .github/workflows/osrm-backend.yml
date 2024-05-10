@@ -72,7 +72,6 @@ jobs:
           omitName: true
           omitNameDuringUpdate: true
           replacesArtifacts: true
-          token: ${{ secrets.GITHUB_TOKEN }}
 
   format-taginfo-docs:
     runs-on: ubuntu-22.04
