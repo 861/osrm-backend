@@ -45,16 +45,7 @@ jobs:
           PACKAGE_JSON_VERSION=$(node -e "console.log(require('./package.json').version)")
           echo PUBLISH=$([[ "${GITHUB_REF:-}" == "refs/tags/v${PACKAGE_JSON_VERSION}" ]] && echo "On" || echo "Off") >> $GITHUB_ENV
       - run: npm install --ignore-scripts
-      - run: npm link --ignore-scripts
-
-      - name: Build Shared Libraries
-        shell: bash
-        run: |
-          mkdir build_shared
-          cd build_shared
-          cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_CONAN=ON -DENABLE_NODE_BINDINGS=ON -DBUILD_SHARED_LIBS=ON -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY=../build/lib -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=../build/lib ..
-          cmake --build . --config Release
-          cd ..
+      - run: npm link --ignore-script
 
       - name: Build Static Libraries
         shell: bash
@@ -62,6 +53,15 @@ jobs:
           mkdir build_static
           cd build_static
           cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_CONAN=ON -DENABLE_NODE_BINDINGS=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY=../build/lib -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=../build/lib ..
+          cmake --build . --config Release
+          cd ..
+
+      - name: Build Shared Libraries
+        shell: bash
+        run: |
+          mkdir build_shared
+          cd build_shared
+          cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_CONAN=ON -DENABLE_NODE_BINDINGS=ON -DBUILD_SHARED_LIBS=ON -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY=../build/lib -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=../build/lib ..
           cmake --build . --config Release
           cd ..
 
