@@ -71,7 +71,7 @@ jobs:
         # cmake --install . --prefix ../install --component libs
         run: |
           mkdir -p install
-          cd ../build_static
+          cd build_static
           cmake --install . --prefix ../install --component libs
           cd ../install
           zip -r osrm-libs.zip .
