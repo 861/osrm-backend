@@ -58,6 +58,8 @@ jobs:
         run: |
           cd build
           cmake --install . --prefix ../install --component libs
+          # Copy static libraries to the install directory
+          cp lib/*.lib ../install/lib/
           cmake --build . --config Release --target package
           echo "ARTIFACTS=$(ls *.zip)" >> $GITHUB_OUTPUT
       - name: Publish Node package
@@ -78,6 +80,8 @@ jobs:
         shell: bash
         run: |
           cd build
+          # Use the installed libraries when building the application targets
+          cmake -DCMAKE_PREFIX_PATH=${GITHUB_WORKSPACE}/install ..
           cmake --build . --config Release --target osrm-extract
           cmake --build . --config Release --target osrm-contract
           cmake --build . --config Release --target osrm-datastore
