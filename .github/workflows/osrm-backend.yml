@@ -23,6 +23,65 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  windows-release:
+    needs: format-taginfo-docs
+    runs-on: windows-2022
+    continue-on-error: false
+    env:
+      BUILD_TYPE: Release
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install "conan<2.0.0"
+      - run: conan --version
+      - run: cmake --version
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - run: node --version
+      - run: npm --version
+      - name: Prepare environment
+        shell: bash
+        run: |
+          PACKAGE_JSON_VERSION=$(node -e "console.log(require('./package.json').version)")
+          echo PUBLISH=$([[ "${GITHUB_REF:-}" == "refs/tags/v${PACKAGE_JSON_VERSION}" ]] && echo "On" || echo "Off") >> $GITHUB_ENV
+      - run: npm install --ignore-scripts
+      - run: npm link --ignore-scripts
+      - name: Build
+        shell: bash
+        run: |
+          mkdir build
+          cd build
+          cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_CONAN=ON -DENABLE_NODE_BINDINGS=ON -DBUILD_SHARED_LIBS=ON -DBUILD_STATIC_LIBS=ON -DBUILD_TOOLS=ON ..
+          cmake --build . --config Release
+      - name: Package artifacts
+        shell: bash
+        run: |
+          cd build
+          cmake --install . --prefix ../install --component libs
+          cmake --build . --config Release --target package
+          echo "ARTIFACTS=$(ls *.zip)" >> $GITHUB_OUTPUT
+      - name: Publish Node package
+        if: ${{ env.PUBLISH == 'On' }}
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          artifactErrorsFailBuild: true
+          artifacts: ${{ steps.package-artifacts.outputs.ARTIFACTS }}
+          omitBody: true
+          omitBodyDuringUpdate: true
+          omitName: true
+          omitNameDuringUpdate: true
+          replacesArtifacts: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Windows application
+        shell: bash
+        run: |
+          cd build
+          cmake --build . --config Release --target osrm-extract
+          cmake --build . --config Release --target osrm-contract
+          cmake --build . --config Release --target osrm-datastore
+          cmake --build . --config Release --target osrm-routed
   windows-release-node:
     needs: format-taginfo-docs
     runs-on: windows-2022
