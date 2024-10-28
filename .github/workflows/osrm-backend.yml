@@ -51,7 +51,7 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_CONAN=ON -DENABLE_NODE_BINDINGS=ON -DBUILD_SHARED_LIBS=ON -DBUILD_STATIC_LIBS=ON -DBUILD_TOOLS=ON ..
+          cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_CONAN=ON -DENABLE_NODE_BINDINGS=ON -DBUILD_SHARED_LIBS=ON -DBUILD_STATIC_LIBS=ON -DBUILD_TOOLS=ON -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY=../build/Release -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=../build/Release ..
           cmake --build . --config Release
       - name: Package artifacts
         shell: bash
