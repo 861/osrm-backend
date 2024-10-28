@@ -842,6 +842,7 @@ jobs:
       [
         build-test-publish,
         docker-image-matrix,
+        windows-release,
         windows-release-node,
         benchmarks,
       ]
