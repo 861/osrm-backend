@@ -859,12 +859,11 @@ jobs:
 
   ci-complete:
     runs-on: ubuntu-22.04
-    needs:
-      [
+    needs: [
         build-test-publish,
         docker-image-matrix,
         windows-release,
-        windows-release-node,
+        # windows-release-node,
         benchmarks,
       ]
     steps:
