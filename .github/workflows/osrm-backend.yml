@@ -39,6 +39,9 @@ jobs:
           node-version: 18
       - run: node --version
       - run: npm --version
+      - name: Install Zip
+        run: |
+          choco install zip -y
       - name: Prepare environment
         shell: bash
         run: |
