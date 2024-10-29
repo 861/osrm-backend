@@ -77,7 +77,7 @@ jobs:
           cd build_static
           cmake --install . --prefix ../install --component libs
           cd ../install
-          zip -r osrm-libs.zip .
+          zip -r osrm-libs.zip . -i .
           echo "ARTIFACTS=osrm-libs.zip" >> $GITHUB_OUTPUT
 
       - name: Publish Node package
