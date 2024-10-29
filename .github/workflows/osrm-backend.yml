@@ -97,7 +97,7 @@ jobs:
       - name: Build Windows Application
         shell: bash
         run: |
-          cd build_shared
+          cd build_static
           cmake --build . --config Release --target osrm-extract
           cmake --build . --config Release --target osrm-contract
           cmake --build . --config Release --target osrm-datastore
