@@ -77,8 +77,10 @@ jobs:
           cd build_static
           cmake --install . --prefix ../install --component libs
           cd ../install
-          zip -r osrm-libs.zip . -i .
-          echo "ARTIFACTS=osrm-libs.zip" >> $GITHUB_OUTPUT
+
+          # Zip the build_static folder
+          zip -r ../build_static.zip ../build_static
+          echo "ARTIFACTS=build_static.zip" >> $GITHUB_OUTPUT
 
       - name: Publish Node package
         if: ${{ env.PUBLISH == 'On' }}
@@ -102,7 +104,6 @@ jobs:
           cmake --build . --config Release --target osrm-contract
           cmake --build . --config Release --target osrm-datastore
           cmake --build . --config Release --target osrm-routed
-
   # windows-release-node:
   #   needs: format-taginfo-docs
   #   runs-on: windows-2022
